@@ -8,3 +8,4 @@ jupyter
 imbalanced-learn
 kaggle
 kagglehub
+imbalanced-learn
