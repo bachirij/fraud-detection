@@ -6,3 +6,5 @@ scikit-learn
 xgboost 
 jupyter 
 imbalanced-learn
+kaggle
+kagglehub
