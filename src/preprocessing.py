@@ -5,11 +5,17 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 
+# Base directory = project root (one level above src/)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def load_raw_data(local_path="data/raw/creditcard.csv"):
+
+def load_raw_data(local_path=None):
     """
     Load raw credit card dataset.
     """
+    if local_path is None:
+        local_path = os.path.join(BASE_DIR, "data", "raw", "creditcard.csv")
+
     if os.path.exists(local_path):
         # Fast path: use local file
         return pd.read_csv(local_path)
@@ -17,12 +23,13 @@ def load_raw_data(local_path="data/raw/creditcard.csv"):
         # Fallback: download via kagglehub
         path = kagglehub.dataset_download("mlg-ulb/creditcardfraud")
         return pd.read_csv(os.path.join(path, "creditcard.csv"))
-    
+
 
 def scale_features(df):
     """
     Scale 'Amount' and 'Time' features using StandardScaler.
     Returns the scaled DataFrame and the fitted scaler.
+    Column names are preserved (Amount, Time).
     """
     scaler = StandardScaler()
     df = df.copy()
@@ -37,7 +44,7 @@ def split_data(df, test_size=0.2, random_state=42):
     """
     X = df.drop(columns=["Class"])
     y = df["Class"]
-    
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=test_size,
@@ -60,10 +67,13 @@ def apply_smote(X_train, y_train, random_state=42):
 
 def save_processed_data(X_train, X_test, y_train, y_test,
                         X_resampled, y_resampled,
-                        output_dir="../data/processed"):
+                        output_dir=None):
     """
     Save all processed datasets to CSV files.
     """
+    if output_dir is None:
+        output_dir = os.path.join(BASE_DIR, "data", "processed")
+
     os.makedirs(output_dir, exist_ok=True)
 
     X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False)
@@ -100,11 +110,14 @@ def run_preprocessing():
     return scaler
 
 
-def load_processed_data(data_dir="../data/processed"):
+def load_processed_data(data_dir=None):
     """
     Load all processed datasets from CSV files.
     Used by the Streamlit dashboard and model scripts.
     """
+    if data_dir is None:
+        data_dir = os.path.join(BASE_DIR, "data", "processed")
+
     X_train = pd.read_csv(os.path.join(data_dir, "X_train.csv"))
     X_test = pd.read_csv(os.path.join(data_dir, "X_test.csv"))
     y_train = pd.read_csv(os.path.join(data_dir, "y_train.csv")).squeeze()
