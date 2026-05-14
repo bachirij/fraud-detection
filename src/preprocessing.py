@@ -60,7 +60,7 @@ def apply_smote(X_train, y_train, random_state=42):
 
 def save_processed_data(X_train, X_test, y_train, y_test,
                         X_resampled, y_resampled,
-                        output_dir="data/processed"):
+                        output_dir="../data/processed"):
     """
     Save all processed datasets to CSV files.
     """
@@ -100,7 +100,7 @@ def run_preprocessing():
     return scaler
 
 
-def load_processed_data(data_dir="data/processed"):
+def load_processed_data(data_dir="../data/processed"):
     """
     Load all processed datasets from CSV files.
     Used by the Streamlit dashboard and model scripts.
