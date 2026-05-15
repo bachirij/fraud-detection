@@ -40,9 +40,10 @@ The goal is to build a model that **maximizes fraud recall** (minimizing missed 
 fraud-detection/
 ├── README.md
 ├── requirements.txt
+├── docs/fraud_detection_presentation.pdf ← project presentation slides
 ├── data/
-│   ├── raw/                        ← auto-downloaded via kagglehub (git-ignored)
-│   └── processed/                  ← generated at first run (git-ignored)
+│   ├── raw/                               ← auto-downloaded via kagglehub (git-ignored)
+│   └── processed/                         ← generated at first run (git-ignored)
 ├── models/
 │   ├── logistic_regression.joblib
 │   ├── decision_tree.joblib
