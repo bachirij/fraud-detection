@@ -9,3 +9,5 @@ imbalanced-learn
 kaggle
 kagglehub
 imbalanced-learn
+streamlit
+plotly
