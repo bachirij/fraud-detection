@@ -4,7 +4,7 @@ A complete end-to-end machine learning project: from exploratory data analysis t
 
 > Built as a portfolio project covering **supervised learning**, **unsupervised learning**, and **production deployment** via Streamlit.
 
-**[Live Dashboard](https://ton-url.streamlit.app)**
+**[Live Dashboard](https://bachirij-fraud-detection.streamlit.app)**
 
 ---
 
