@@ -12,6 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def load_raw_data(local_path=None):
     """
     Load raw credit card dataset.
+    Tries local file first, falls back to kagglehub download.
     """
     if local_path is None:
         local_path = os.path.join(BASE_DIR, "data", "raw", "creditcard.csv")
@@ -25,22 +26,11 @@ def load_raw_data(local_path=None):
         return pd.read_csv(os.path.join(path, "creditcard.csv"))
 
 
-def scale_features(df):
-    """
-    Scale 'Amount' and 'Time' features using StandardScaler.
-    Returns the scaled DataFrame and the fitted scaler.
-    Column names are preserved (Amount, Time).
-    """
-    scaler = StandardScaler()
-    df = df.copy()
-    df[["Amount", "Time"]] = scaler.fit_transform(df[["Amount", "Time"]])
-    return df, scaler
-
-
 def split_data(df, test_size=0.2, random_state=42):
     """
     Split dataset into train and test sets.
     Stratified to preserve fraud ratio (~0.17%).
+    Must be called BEFORE scaling to prevent data leakage.
     """
     X = df.drop(columns=["Class"])
     y = df["Class"]
@@ -54,10 +44,24 @@ def split_data(df, test_size=0.2, random_state=42):
     return X_train, X_test, y_train, y_test
 
 
+def scale_features(X_train, X_test):
+    """
+    Scale 'Amount' and 'Time' features using StandardScaler.
+    Fitted on X_train only, then applied to X_test.
+    Prevents data leakage from test set into training statistics.
+    """
+    scaler = StandardScaler()
+    X_train = X_train.copy()
+    X_test = X_test.copy()
+    X_train[["Amount", "Time"]] = scaler.fit_transform(X_train[["Amount", "Time"]])
+    X_test[["Amount", "Time"]] = scaler.transform(X_test[["Amount", "Time"]])
+    return X_train, X_test, scaler
+
+
 def apply_smote(X_train, y_train, random_state=42):
     """
     Apply SMOTE oversampling on training set only.
-    Balances fraud/legitimate ratio to 1:1 (227451 / 227451).
+    Balances fraud/legitimate ratio to 1:1.
     Never applied on test set to preserve real-world distribution.
     """
     smote = SMOTE(random_state=random_state)
@@ -94,11 +98,11 @@ def run_preprocessing():
     print("Loading raw data...")
     df = load_raw_data()
 
-    print("Scaling features...")
-    df, scaler = scale_features(df)
-
     print("Splitting data...")
     X_train, X_test, y_train, y_test = split_data(df)
+
+    print("Scaling features...")
+    X_train, X_test, scaler = scale_features(X_train, X_test)
 
     print("Applying SMOTE...")
     X_resampled, y_resampled = apply_smote(X_train, y_train)
