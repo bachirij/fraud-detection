@@ -4,9 +4,8 @@ matplotlib
 seaborn 
 scikit-learn 
 xgboost 
-imbalanced-learn
+imbalanced-learn==0.12.4
 kagglehub
-imbalanced-learn
 streamlit
 plotly
 joblib
