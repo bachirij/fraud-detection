@@ -1,6 +1,6 @@
 pandas 
 numpy 
-matplotlib 
+matplotlib==3.9.4
 seaborn 
 scikit-learn==1.6.1
 xgboost 
